@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gif/home_page.dart';
+import 'package:gif/screens/home_page.dart';
 
 void main() {
   runApp(const GIF());

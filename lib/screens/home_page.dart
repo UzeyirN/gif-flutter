@@ -1,10 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:gif/styles.dart';
+import 'package:gif/styles/styles.dart';
+import 'package:gif/widgets/gif_card.dart';
 import 'package:http/http.dart' as http;
 
-import 'consts.dart';
+import '../consts/consts.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,6 +17,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var gifData;
   String gifTopic = 'punisher';
+  TextEditingController textEditingController = TextEditingController();
 
   List<String> gifs = [];
 
@@ -29,12 +31,14 @@ class _HomePageState extends State<HomePage> {
 
     gifs.clear();
 
-    setState(() {
-      for (int i = 0; i < 8; ++i) {
-        gifs.add(
-            gifDataParsed['results'][i]['media_formats']['tinygif']['url']);
-      }
-    });
+    setState(
+      () {
+        for (int i = 0; i < 5; ++i) {
+          gifs.add(
+              gifDataParsed['results'][i]['media_formats']['tinygif']['url']);
+        }
+      },
+    );
   }
 
   @override
@@ -67,6 +71,7 @@ class _HomePageState extends State<HomePage> {
                     child: Column(
                       children: [
                         TextField(
+                          controller: textEditingController,
                           onChanged: (newValue) {
                             gifTopic = newValue;
                           },
@@ -86,9 +91,12 @@ class _HomePageState extends State<HomePage> {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            setState(() {
-                              getGifData();
-                            });
+                            setState(
+                              () {
+                                getGifData();
+                              },
+                            );
+                            textEditingController.clear();
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.grey[300],
@@ -106,31 +114,32 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 Expanded(
-                  child: buildGifCard(context),
+                  child: GifCard(gifs: gifs),
                 ),
               ],
             ),
           );
   }
 
-  SizedBox buildGifCard(BuildContext context) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      child: ListView.separated(
-          itemCount: gifs.length,
-          itemBuilder: (context, index) {
-            return Image.network(
-              gifs[index],
-              width: double.infinity,
-              fit: BoxFit.cover,
-            );
-          },
-          separatorBuilder: (context, index) {
-            return Divider(
-              height: 10,
-              color: Colors.transparent,
-            );
-          }),
-    );
-  }
+// SizedBox buildGifCard(BuildContext context) {
+//   return SizedBox(
+//     width: MediaQuery.of(context).size.width,
+//     child: ListView.separated(
+//       itemCount: gifs.length,
+//       itemBuilder: (context, index) {
+//         return Image.network(
+//           gifs[index],
+//           width: double.infinity,
+//           fit: BoxFit.cover,
+//         );
+//       },
+//       separatorBuilder: (context, index) {
+//         return Divider(
+//           height: 10,
+//           color: Colors.transparent,
+//         );
+//       },
+//     ),
+//   );
+// }
 }
